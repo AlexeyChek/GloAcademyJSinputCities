@@ -1,6 +1,6 @@
 * {
   -webkit-box-sizing: border-box;
-          box-sizing: border-box;
+  box-sizing: border-box;
   margin: 0;
   padding: 0;
   list-style-type: none;
@@ -21,8 +21,8 @@ body .main {
   display: -ms-flexbox;
   display: flex;
   -webkit-box-pack: center;
-      -ms-flex-pack: center;
-          justify-content: center;
+  -ms-flex-pack: center;
+  justify-content: center;
   background: #00416A;
   background: -webkit-gradient(linear, left top, left bottom, from(#00416A), to(#E4E5E6));
   background: linear-gradient(to bottom, #00416A, #E4E5E6);
@@ -48,7 +48,7 @@ body .main .input-cities #select-cities {
   color: #00416A;
 }
 
-body .main .input-cities #select-cities:focus ~ .label {
+body .main .input-cities #select-cities:focus~.label {
   top: -25px;
   left: 0;
   color: #00416A;
@@ -78,12 +78,12 @@ body .main .input-cities .close-button:before {
 
 body .main .input-cities .close-button:after {
   -webkit-transform: rotate(45deg);
-          transform: rotate(45deg);
+  transform: rotate(45deg);
 }
 
 body .main .input-cities .close-button:before {
   -webkit-transform: rotate(-45deg);
-          transform: rotate(-45deg);
+  transform: rotate(-45deg);
 }
 
 body .main .input-cities label {
@@ -126,27 +126,36 @@ body .main .input-cities label {
   display: -webkit-box;
   display: -ms-flexbox;
   display: flex;
+  position: relative;
+  overflow-x: hidden;
 }
 
 .dropdown-lists__list {
   width: 100%;
+  height: 100%;
+  flex-basis: 100%;
+  flex-shrink: 0;
+  position: relative;
+  background-color: #fff;
+  transition: 0.3s;
 }
 
 .dropdown-lists__list--select {
-  display: none;
+  /* display: none; */
 }
 
 .dropdown-lists__list--autocomplete {
   display: none;
 }
 
-.dropdown-lists__total-line, .dropdown-lists__line {
+.dropdown-lists__total-line,
+.dropdown-lists__line {
   display: -webkit-box;
   display: -ms-flexbox;
   display: flex;
   -webkit-box-pack: justify;
-      -ms-flex-pack: justify;
-          justify-content: space-between;
+  -ms-flex-pack: justify;
+  justify-content: space-between;
   padding: 5px 15px;
   cursor: pointer;
 }
@@ -168,8 +177,8 @@ body .main .input-cities label {
   margin: 10px 0;
 }
 
-#select-cities ~ .focus-border:before,
-#select-cities ~ .focus-border:after {
+#select-cities~.focus-border:before,
+#select-cities~.focus-border:after {
   content: "";
   position: absolute;
   top: 0;
@@ -181,15 +190,15 @@ body .main .input-cities label {
   transition: 0.3s;
 }
 
-#select-cities ~ .focus-border:after {
+#select-cities~.focus-border:after {
   top: auto;
   bottom: 0;
   left: auto;
   right: 0;
 }
 
-#select-cities ~ .focus-border i:before,
-#select-cities ~ .focus-border i:after {
+#select-cities~.focus-border i:before,
+#select-cities~.focus-border i:after {
   content: "";
   position: absolute;
   top: 0;
@@ -201,24 +210,38 @@ body .main .input-cities label {
   transition: 0.4s;
 }
 
-#select-cities ~ .focus-border i:after {
+#select-cities~.focus-border i:after {
   left: auto;
   right: 0;
   top: auto;
   bottom: 0;
 }
 
-#select-cities:focus ~ .focus-border:before,
-#select-cities:focus ~ .focus-border:after {
+#select-cities:focus~.focus-border:before,
+#select-cities:focus~.focus-border:after {
   width: 100%;
   -webkit-transition: 0.3s;
   transition: 0.3s;
 }
 
-#select-cities:focus ~ .focus-border i:before,
-#select-cities:focus ~ .focus-border i:after {
+#select-cities:focus~.focus-border i:before,
+#select-cities:focus~.focus-border i:after {
   height: 100%;
   -webkit-transition: 0.4s;
   transition: 0.4s;
 }
+
+.preloader {
+  position: fixed;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+  background-color: rgba(150, 150, 150, 0.5);
+}
+
 /*# sourceMappingURL=style.css.map */
