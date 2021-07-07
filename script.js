@@ -1,8 +1,6 @@
 'use strict';
 
-let language = 'RU';
 let countries = {};
-let listSelectDisplay = false;
 
 const listDefault = document.querySelector('.dropdown-lists__list--default'),
   label = document.querySelector('.label'),
@@ -16,34 +14,9 @@ const listDefault = document.querySelector('.dropdown-lists__list--default'),
 
 button.setAttribute('disabled', true);
 
-const getCountries = () => {
-  const countries = {};
-  fetch('./db_cities.json')
-  .then((response) => {
-    if (response.status !== 200) {
-      throw new Error('status network not 200!');
-    }
-    return response.json();
-  })
-  .then((response) => {
-    response[language];
-    data[language].forEach(item => {
-      countries[item.country] = {
-        count: item.count,
-        cities: item.cities
-      };
-    });
-    preloader.style.display = 'none';
-    runCities(countries);
-  })
-  .catch(error => {
-    console.error(error);
-  });
-};
+const runCities = (countries, language) => {
+  let listSelectDisplay = false;
 
-countries = getCountries();
-
-const runCities = (countries) => {
   const getCity = (country, city, value) => {
     return `
       <div class="dropdown-lists__line" data-link="${countries[country].cities[city].link}">
@@ -64,13 +37,13 @@ const runCities = (countries) => {
       }
     }
     return text;
-  }
+  };
   
   const getCountry = (country, all) => {
     let text = '';
   
     const getData = (key) => {
-      text += `
+      return `
         <div class="dropdown-lists__countryBlock">
           <div class="dropdown-lists__total-line">
             <div class="dropdown-lists__country">${key}</div>
@@ -81,11 +54,20 @@ const runCities = (countries) => {
       `;
     };
     if (!country) {
-      for (let key in countries) {
-        getData(key);
+      let keys = new Set(Object.keys(countries));
+      if (language === 'RU') {
+        text += getData('Россия');
+        keys.delete('Россия');
+      } else if (language === 'DE') {
+        text += getData('Deutschland');
+        keys.delete('Deutschland');
+      } else if (language === 'EN') {
+        text += getData('United Kingdom');
+        keys.delete('United Kingdom');
       }
+      keys.forEach(key => text += getData(key));
     } else {
-      getData(country);
+      text += getData(country);
     }
     return text;
   };
@@ -149,7 +131,6 @@ const runCities = (countries) => {
       position = -100;
       direction = 5;
     }
-    console.log(direction);
     const animate = () => {
       if ((listSelectDisplay && position > -100) || (!listSelectDisplay && position < 0)) {
         position += direction;
@@ -163,7 +144,6 @@ const runCities = (countries) => {
   
   const getListAutocomplete = () => {
     const getAllCity = (value) => {
-      console.log(value);
       let text = '';
       for (let country in countries){
         for (let city in countries[country].cities) {
@@ -219,4 +199,75 @@ const runCities = (countries) => {
     listDefault.style.left = 0;
     listSelectDisplay = false;
   });
-}
+};
+
+const getCountries = (language) => {
+  const getData = (language) => {
+    const countries = {};
+    fetch('./db_cities.json')
+    .then((response) => {
+      if (response.status !== 200) {
+        throw new Error('status network not 200!');
+      }
+      return response.json();
+    })
+    .then((response) => {
+      response[language];
+      data[language].forEach(item => {
+        countries[item.country] = {
+          count: item.count,
+          cities: item.cities
+        };
+      });
+      localStorage.cities = JSON.stringify({[language]: countries});
+      preloader.style.display = 'none';
+      runCities(countries, language);
+    })
+    .catch(error => {
+      console.error(error);
+    });
+  };
+
+  if (localStorage.cities) {
+    let localData = JSON.parse(localStorage.cities);
+    let lang = Object.keys(localData)[0];
+    if (lang === language) {
+      runCities(localData[lang], language);
+      preloader.style.display = 'none';
+    } else {
+      getData(language);
+    }
+  } else {
+    getData(language);
+  }
+};
+
+const getLanguage = () => {
+  const data = (lang) => {
+    lang = lang.toUpperCase();
+    if (lang === 'RU' || lang === 'EN' || lang === 'DE') {
+      document.cookie = `lang=${lang}; max-age=${60*60*24}`;
+      return lang;
+    } else {
+      getLang();
+    }
+  };
+
+  const getLang = () => {
+    return data(prompt('Выберите язык: RU, EN, DE', 'RU'));
+  };
+
+  if (document.cookie) {
+    let cookies = document.cookie.split('=');
+    if (cookies[0] === 'lang') {
+      return data(cookies[1]);
+    } else {
+      return getLang();
+    }
+  } else {
+    return getLang();
+  }
+};
+
+countries = getCountries(getLanguage());
+
